@@ -21,7 +21,7 @@ RUN cargo build --release
 
 # Stage 2: Setup the runtime environment
 # Use a Debian or Ubuntu image that is compatible with the GLIBC version used in the builder stage
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim as runtime
 
 # Copy the binary and any other necessary files from the builder stage
 COPY --from=builder /visualize-api/target/release/visualize-api /usr/local/bin/visualize-api

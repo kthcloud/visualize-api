@@ -92,11 +92,26 @@ fn status_worker(tx: Sender<WorkerMessage>) {
     let url = format!("{}/landing/v2/status?n=100", api_url);
 
     loop {
-        let response = reqwest::blocking::get(&url).unwrap().text().unwrap();
-        let res_value = serde_json::from_str(&response).unwrap();
-        tx.send(WorkerMessage::Status(res_value)).unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(100));
 
-        thread::sleep(std::time::Duration::from_secs(1));
+        let response = reqwest::blocking::get(&url).unwrap().text();
+        if response.is_err() {
+            println!("Status worker error: {}", response.err().unwrap());
+            continue;
+        }
+
+
+        let res_value = serde_json::from_str(&response.unwrap());
+        if res_value.is_err() {
+            println!("Status worker error: {}", res_value.err().unwrap());
+            continue;
+        }
+
+        let send_res = tx.send(WorkerMessage::Status(res_value.unwrap()));
+        if send_res.is_err() {
+            println!("Status worker error: {}", send_res.err().unwrap());
+            continue;
+        }
     }
 }
 
@@ -107,11 +122,25 @@ fn capacities_worker(tx: Sender<WorkerMessage>) {
     let url = format!("{}/landing/v2/status?n=1", api_url);
 
     loop {
-        let response = reqwest::blocking::get(&url).unwrap().text().unwrap();
-        let res_value = serde_json::from_str(&response).unwrap();
-        tx.send(WorkerMessage::Capacities(res_value)).unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(100));
 
-        thread::sleep(std::time::Duration::from_secs(1));
+        let response = reqwest::blocking::get(&url).unwrap().text();
+        if response.is_err() {
+            println!("Capacities worker error: {}", response.err().unwrap());
+            continue;
+        }
+
+        let res_value = serde_json::from_str(&response.unwrap());
+        if res_value.is_err() {
+            println!("Capacities worker error: {}", res_value.err().unwrap());
+            continue;
+        }
+
+        let send_res = tx.send(WorkerMessage::Capacities(res_value.unwrap()));
+        if send_res.is_err() {
+            println!("Capacities worker error: {}", send_res.err().unwrap());
+            continue;
+        }
     }
 }
 
@@ -122,11 +151,25 @@ fn stats_worker(tx: Sender<WorkerMessage>) {
     let url = format!("{}/landing/v2/stats?n=1", api_url);
 
     loop {
-        let response = reqwest::blocking::get(&url).unwrap().text().unwrap();
-        let res_value = serde_json::from_str(&response).unwrap();
-        tx.send(WorkerMessage::Stats(res_value)).unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(100));
 
-        thread::sleep(std::time::Duration::from_secs(1));
+        let response = reqwest::blocking::get(&url).unwrap().text();
+        if response.is_err() {
+            println!("Stats worker error: {}", response.err().unwrap());
+            continue;
+        }
+
+        let res_value = serde_json::from_str(&response.unwrap());
+        if res_value.is_err() {
+            println!("Stats worker error: {}", res_value.err().unwrap());
+            continue;
+        }
+
+        res = tx.send(WorkerMessage::Stats(res_value.unwrap()));
+        if send_res.is_err() {
+            println!("Stats worker error: {}", send_res.err().unwrap());
+            continue;
+        }
     }
 }
 

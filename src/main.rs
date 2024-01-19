@@ -1,3 +1,4 @@
+use chrono::Utc;
 use reqwest;
 use rocket::http::Status;
 use rocket::response::status;
@@ -8,7 +9,6 @@ use std::env;
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::sync::{Arc, Mutex};
 use std::thread;
-use chrono::{Datelike, Timelike, Utc};
 
 #[derive(Serialize)]
 struct Res {
@@ -95,6 +95,8 @@ fn status_worker(tx: Sender<WorkerMessage>) {
         let response = reqwest::blocking::get(&url).unwrap().text().unwrap();
         let res_value = serde_json::from_str(&response).unwrap();
         tx.send(WorkerMessage::Status(res_value)).unwrap();
+
+        thread::sleep(std::time::Duration::from_secs(1));
     }
 }
 
@@ -108,6 +110,8 @@ fn capacities_worker(tx: Sender<WorkerMessage>) {
         let response = reqwest::blocking::get(&url).unwrap().text().unwrap();
         let res_value = serde_json::from_str(&response).unwrap();
         tx.send(WorkerMessage::Capacities(res_value)).unwrap();
+
+        thread::sleep(std::time::Duration::from_secs(1));
     }
 }
 
@@ -121,6 +125,8 @@ fn stats_worker(tx: Sender<WorkerMessage>) {
         let response = reqwest::blocking::get(&url).unwrap().text().unwrap();
         let res_value = serde_json::from_str(&response).unwrap();
         tx.send(WorkerMessage::Stats(res_value)).unwrap();
+
+        thread::sleep(std::time::Duration::from_secs(1));
     }
 }
 

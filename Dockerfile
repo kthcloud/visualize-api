@@ -6,14 +6,7 @@ FROM rust:1-bookworm as builder
 RUN USER=root cargo new --bin visualize-api
 WORKDIR /visualize-api
 
-# Copy the Cargo.toml and Cargo.lock files and build the dependencies
-# This is a separate step so the dependencies will be cached unless
-# the Cargo.toml or Cargo.lock files are changed.
-COPY ./Cargo.toml ./Cargo.lock ./
-RUN cargo build --release
-RUN rm src/*.rs
-
-# Now copy in the rest of the source code
+COPY ./Cargo.toml ./
 COPY ./src ./src
 
 # Build the application

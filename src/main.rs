@@ -165,7 +165,7 @@ fn stats_worker(tx: Sender<WorkerMessage>) {
             continue;
         }
 
-        res = tx.send(WorkerMessage::Stats(res_value.unwrap()));
+        let send_res = tx.send(WorkerMessage::Stats(res_value.unwrap()));
         if send_res.is_err() {
             println!("Stats worker error: {}", send_res.err().unwrap());
             continue;

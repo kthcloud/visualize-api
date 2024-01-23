@@ -119,7 +119,7 @@ fn capacities_worker(tx: Sender<WorkerMessage>) {
     println!("Capacities worker started");
 
     let api_url = env::var("API_URL").expect("API_URL not set");
-    let url = format!("{}/landing/v2/status?n=1", api_url);
+    let url = format!("{}/landing/v2/capacities?n=1", api_url);
 
     loop {
         std::thread::sleep(std::time::Duration::from_millis(100));

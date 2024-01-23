@@ -17,8 +17,7 @@ FROM debian:bookworm-slim as runtime
 COPY --from=builder /visualize-api/target/release/visualize-api /usr/local/bin/visualize-api
 
 ENV API_URL="https://api.cloud.cbh.kth.se"
-ENV ROCKET_PORT=8000
-ENV ROCKET_HOST="0.0.0.0"
+ENV ROCKET_PROFILE="release"
 
 # Install necessary runtime dependencies
 RUN apt update && apt upgrade -y && apt autoremove -y 

@@ -1,10 +1,10 @@
 [default]
-address = "0.0.0.0"
+address = "172.0.0.1"
 port = 8000
 
 ## set only when compiled in debug mode, i.e, `cargo build`
 [debug]
-address = "0.0.0.0"
+address = "172.0.0.1"
 port = 8000
 
 ## set only when compiled in release mode, i.e, `cargo build --release`

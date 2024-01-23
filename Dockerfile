@@ -5,8 +5,7 @@ FROM rust:1-bookworm as builder
 RUN USER=root cargo new --bin visualize-api
 WORKDIR /visualize-api
 
-COPY ./Cargo.toml ./
-COPY ./src ./src
+COPY ./ ./
 
 # Build the application
 RUN cargo build --release
@@ -18,10 +17,14 @@ FROM debian:bookworm-slim as runtime
 COPY --from=builder /visualize-api/target/release/visualize-api /usr/local/bin/visualize-api
 
 ENV API_URL="https://api.cloud.cbh.kth.se"
-ENV ROCKET_ENV=production
 ENV ROCKET_PORT=8000
+ENV ROCKET_HOST="0.0.0.0"
 
-RUN apt update && apt install libssl-dev ca-certificates -y && rm -rf /var/lib/apt/lists/*
+# Install necessary runtime dependencies
+RUN apt update && apt upgrade -y && apt autoremove -y 
+RUN apt install libssl-dev ca-certificates -y && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 8000
 
 # Set the default command to run the binary
 CMD ["visualize-api"]

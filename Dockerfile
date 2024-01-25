@@ -18,10 +18,12 @@ COPY --from=builder /visualize-api/target/release/visualize-api /usr/local/bin/v
 
 ENV API_URL="https://api.cloud.cbh.kth.se"
 ENV ROCKET_PROFILE="release"
+ENV ROCKET_ADDRESS="0.0.0.0"
+ENV ROCKET_PORT="8000"
 
 # Install necessary runtime dependencies
-RUN apt update && apt upgrade -y && apt autoremove -y 
-RUN apt install libssl-dev ca-certificates -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y 
+RUN apt-get install libssl-dev ca-certificates -y && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8000
 

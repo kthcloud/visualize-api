@@ -100,7 +100,6 @@ fn status_worker(tx: Sender<WorkerMessage>) {
             continue;
         }
 
-
         let res_value = serde_json::from_str(&response.unwrap());
         if res_value.is_err() {
             println!("Status worker error: {}", res_value.err().unwrap());

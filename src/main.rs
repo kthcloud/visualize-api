@@ -1,10 +1,10 @@
 use chrono::Utc;
 use dotenv::dotenv;
-use rocket::http::Status;
+use rocket::http::{Method, Status};
 use rocket::response::status;
 use rocket::serde::Serialize;
 use rocket::{get, launch, routes, State};
-use rocket_cors::{AllowedHeaders, AllowedMethods, AllowedOrigins, CorsOptions};
+use rocket_cors::{AllowedHeaders, AllowedOrigins, CorsOptions};
 use serde_json::{Map, Value};
 use std::sync::mpsc::{self, Receiver};
 use std::sync::{Arc, Mutex};
@@ -79,7 +79,10 @@ fn rocket() -> _ {
         allowed_origins: AllowedOrigins::all(),
 
         // Specify the allowed methods
-        allowed_methods: AllowedMethods::all(),
+        allowed_methods: vec![Method::Get, Method::Post, Method::Put, Method::Delete]
+            .into_iter()
+            .map(From::from)
+            .collect(),
 
         // Allow headers for content type, authorization, etc.
         allowed_headers: AllowedHeaders::all(),
@@ -93,9 +96,9 @@ fn rocket() -> _ {
     .expect("CORS configuration error");
 
     rocket::build()
+        .attach(cors)
         .manage(shared_status)
         .mount("/", routes![index, healthz])
-        .attach(cors)
 }
 
 fn update_res_thread(rx: Receiver<workers::Message>, res: Arc<Mutex<Res>>) {

@@ -4,7 +4,7 @@ use rocket::http::{Method, Status};
 use rocket::response::status;
 use rocket::serde::Serialize;
 use rocket::{get, launch, routes, State};
-use rocket_cors::{AllowedHeaders, AllowedOrigins, CorsOptions};
+use rocket_cors::CorsOptions;
 use serde_json::{Map, Value};
 use std::sync::mpsc::{self, Receiver};
 use std::sync::{Arc, Mutex};
@@ -74,26 +74,9 @@ fn rocket() -> _ {
         thread::spawn(move || workers::jobs(tx_clone));
     }
 
-    let cors = CorsOptions {
-        // Allow all origins
-        allowed_origins: AllowedOrigins::all(),
-
-        // Specify the allowed methods
-        allowed_methods: vec![Method::Get, Method::Post, Method::Put, Method::Delete]
-            .into_iter()
-            .map(From::from)
-            .collect(),
-
-        // Allow headers for content type, authorization, etc.
-        allowed_headers: AllowedHeaders::all(),
-
-        // Enable credentials
-        allow_credentials: true,
-
-        ..Default::default()
-    }
-    .to_cors()
-    .expect("CORS configuration error");
+    let cors = CorsOptions::default()
+        .to_cors()
+        .expect("CORS configuration error");
 
     rocket::build()
         .attach(cors)

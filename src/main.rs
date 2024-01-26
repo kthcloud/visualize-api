@@ -1,16 +1,17 @@
 use chrono::Utc;
+use dotenv::dotenv;
 use rocket::http::Status;
 use rocket::response::status;
 use rocket::serde::Serialize;
 use rocket::{get, launch, routes, State};
+use rocket_cors::{AllowedHeaders, AllowedMethods, AllowedOrigins, CorsOptions};
 use serde_json::{Map, Value};
 use std::sync::mpsc::{self, Receiver};
 use std::sync::{Arc, Mutex};
 use std::thread;
-use dotenv::dotenv;
 
-mod workers;
 mod iam;
+mod workers;
 
 #[derive(Serialize)]
 struct Res {
@@ -73,9 +74,28 @@ fn rocket() -> _ {
         thread::spawn(move || workers::jobs(tx_clone));
     }
 
+    let cors = CorsOptions {
+        // Allow all origins
+        allowed_origins: AllowedOrigins::all(),
+
+        // Specify the allowed methods
+        allowed_methods: AllowedMethods::all(),
+
+        // Allow headers for content type, authorization, etc.
+        allowed_headers: AllowedHeaders::all(),
+
+        // Enable credentials
+        allow_credentials: true,
+
+        ..Default::default()
+    }
+    .to_cors()
+    .expect("CORS configuration error");
+
     rocket::build()
         .manage(shared_status)
         .mount("/", routes![index, healthz])
+        .attach(cors)
 }
 
 fn update_res_thread(rx: Receiver<workers::Message>, res: Arc<Mutex<Res>>) {

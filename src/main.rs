@@ -1,6 +1,6 @@
 use chrono::Utc;
 use dotenv::dotenv;
-use rocket::http::{Method, Status};
+use rocket::http::Status;
 use rocket::response::status;
 use rocket::serde::Serialize;
 use rocket::{get, launch, routes, State};

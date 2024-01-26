@@ -104,11 +104,6 @@ pub fn stats(tx: Sender<Message>) {
 }
 
 pub fn jobs(tx: Sender<Message>) {
-    let args = "pageSize=10&sortBy=createdAt&sortOrder=-1&excludeType=repairDeployment&excludeType=repairVm&excludeType=repairSm&excludeStatus=failed&excludeStatus=terminated&excludeStatus=pending";
-
-    let api_url = get_api_url();
-    let url = format!("{}/deploy/v1/jobs?{}", api_url, args);
-
     // use a variable "token" and a "fetchedAt" timestamp
     // if the token is not set, fetch it from the API
     // if the token is set, check if the timestamp is older than 1 hour
@@ -142,8 +137,27 @@ pub fn jobs(tx: Sender<Message>) {
             }
         }
 
+        // let args: &str = "sortBy=createdAt&pageSize=1&sortOrder=-1&excludeType=repairDeployment&excludeType=repairVm&excludeType=repairSm&excludeStatus=failed&excludeStatus=terminated&excludeStatus=pending";
+
+        let api_url = get_api_url();
+        let stub = format!("{}/deploy/v1/jobs", api_url);
+        let params = [
+            ("pageSize", "10"),
+            ("sortBy", "createdAt"),
+            ("sortOrder", "-1"),
+            ("excludeType", "repairDeployment"),
+            ("excludeType", "repairVm"),
+            ("excludeType", "repairSm"),
+            ("excludeStatus", "failed"),
+            ("excludeStatus", "terminated"),
+            ("excludeStatus", "pending"),
+        ];
+
+        let complete_url = "https://api.cloud.cbh.kth.se/deploy/v1/jobs?pageSize=10&sortBy=createdAt&sortOrder=-1&excludeType=repairDeployment&excludeType=repairVm&excludeType=repairSm&excludeStatus=failed&excludeStatus=terminated&excludeStatus=pending";
+
+        let url = reqwest::Url::parse_with_params(stub.as_str(), &params).unwrap();
         let client = reqwest::blocking::Client::new();
-        let response = client.get(&url).bearer_auth(token.clone()).send();
+        let response = client.get(complete_url).bearer_auth(token.clone()).send();
 
         if response.is_err() {
             println!(

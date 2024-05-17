@@ -20,7 +20,7 @@ pub fn status(tx: Sender<Message>) {
     println!("Status worker started");
 
     let api_url = get_api_url();
-    let url = format!("{}/landing/v2/status?n=100", api_url);
+    let url = format!("{}/sys/v2/status?n=100", api_url);
 
     loop {
         std::thread::sleep(std::time::Duration::from_millis(100));
@@ -49,7 +49,7 @@ pub fn capacities(tx: Sender<Message>) {
     println!("Capacities worker started");
 
     let api_url = get_api_url();
-    let url = format!("{}/landing/v2/capacities?n=1", api_url);
+    let url = format!("{}/sys/v2/capacities?n=1", api_url);
 
     loop {
         std::thread::sleep(std::time::Duration::from_millis(100));
@@ -78,7 +78,7 @@ pub fn stats(tx: Sender<Message>) {
     println!("Stats worker started");
 
     let api_url = get_api_url();
-    let url = format!("{}/landing/v2/stats?n=1", api_url);
+    let url = format!("{}/sys/v2/stats?n=1", api_url);
 
     loop {
         std::thread::sleep(std::time::Duration::from_millis(100));

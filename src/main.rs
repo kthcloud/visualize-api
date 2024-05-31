@@ -24,7 +24,6 @@ struct Res {
 
 #[get("/")]
 async fn index(shared_data: &State<Arc<Mutex<Res>>>) -> String {
-    // return data as a json string
     let mut res = shared_data.lock().unwrap();
 
     res.date = Utc::now().to_rfc3339();

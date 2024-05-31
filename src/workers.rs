@@ -20,7 +20,7 @@ pub fn status(tx: Sender<Message>) {
     println!("Status worker started");
 
     let api_url = get_api_url();
-    let url = format!("{}/sys/v2/status?n=100", api_url);
+    let url = format!("{}/deploy/v2/systemStatus?n=100", api_url);
 
     loop {
         std::thread::sleep(std::time::Duration::from_millis(100));
@@ -49,7 +49,7 @@ pub fn capacities(tx: Sender<Message>) {
     println!("Capacities worker started");
 
     let api_url = get_api_url();
-    let url = format!("{}/sys/v2/capacities?n=1", api_url);
+    let url = format!("{}/deploy/v2/systemCapacities?n=1", api_url);
 
     loop {
         std::thread::sleep(std::time::Duration::from_millis(100));
@@ -78,7 +78,7 @@ pub fn stats(tx: Sender<Message>) {
     println!("Stats worker started");
 
     let api_url = get_api_url();
-    let url = format!("{}/sys/v2/stats?n=1", api_url);
+    let url = format!("{}/deploy/v2/systemStats?n=1", api_url);
 
     loop {
         std::thread::sleep(std::time::Duration::from_millis(100));
@@ -137,27 +137,11 @@ pub fn jobs(tx: Sender<Message>) {
             }
         }
 
-        // let args: &str = "sortBy=createdAt&pageSize=1&sortOrder=-1&excludeType=repairDeployment&excludeType=repairVm&excludeType=repairSm&excludeStatus=failed&excludeStatus=terminated&excludeStatus=pending";
-
         let api_url = get_api_url();
-        let stub = format!("{}/deploy/v1/jobs", api_url);
-        let params = [
-            ("pageSize", "10"),
-            ("sortBy", "createdAt"),
-            ("sortOrder", "-1"),
-            ("excludeType", "repairDeployment"),
-            ("excludeType", "repairVm"),
-            ("excludeType", "repairSm"),
-            ("excludeStatus", "failed"),
-            ("excludeStatus", "terminated"),
-            ("excludeStatus", "pending"),
-        ];
+        let url = format!("{}/deploy/v2/jobs?pageSize=10&sortBy=createdAt&sortOrder=-1&excludeType=repairDeployment&excludeType=repairVm&excludeType=repairSm&excludeStatus=failed&excludeStatus=terminated&excludeStatus=pending", api_url);
 
-        let complete_url = "https://api.cloud.cbh.kth.se/deploy/v1/jobs?pageSize=10&sortBy=createdAt&sortOrder=-1&excludeType=repairDeployment&excludeType=repairVm&excludeType=repairSm&excludeStatus=failed&excludeStatus=terminated&excludeStatus=pending";
-
-        let url = reqwest::Url::parse_with_params(stub.as_str(), &params).unwrap();
         let client = reqwest::blocking::Client::new();
-        let response = client.get(complete_url).bearer_auth(token.clone()).send();
+        let response = client.get(url).bearer_auth(token.clone()).send();
 
         if response.is_err() {
             println!(
